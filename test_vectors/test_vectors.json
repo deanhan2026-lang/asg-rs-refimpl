@@ -1,0 +1,36 @@
+{
+  "spec": "ASG-RS-001 v0.1",
+  "description": "Test vectors for cross-implementation verification",
+  "vectors": [
+    {
+      "name": "canonical_json_key_ordering",
+      "description": "Canonical JSON must sort keys recursively",
+      "input": {"z": 1, "a": 2, "m": {"b": 3, "a": 4}},
+      "expected_output": "{\"a\":2,\"m\":{\"a\":4,\"b\":3},\"z\":1}"
+    },
+    {
+      "name": "canonical_json_compact",
+      "description": "Canonical JSON must be compact (no spaces)",
+      "input": {"key": "value", "nested": {"a": 1}},
+      "expected_output": "{\"key\":\"value\",\"nested\":{\"a\":1}}"
+    },
+    {
+      "name": "evidence_inputs_sha256",
+      "description": "SHA-256 of canonical_json(inputs) for evidence artifact",
+      "inputs": {"behavior": "aggressive", "resource_access": "unauthorized"},
+      "expected_sha256": "788cfcca0bbf86af93ea890a29f141f15d40320d84209c99545a11ce0d3e3b80"
+    },
+    {
+      "name": "domain_prefix",
+      "description": "Ed25519 signature domain prefix for ASG-RS-001",
+      "prefix": "ANIMA-ASG-RS-001-v1",
+      "note": "Signatures use: Ed25519_sign(sk, DOMAIN_PREFIX || SHA256(canonical_json(payload)))"
+    }
+  ],
+  "verification_instructions": {
+    "step_1": "Load this file and for each vector, recompute the expected output",
+    "step_2": "For evidence vectors, recompute SHA-256(canonical_json(inputs)) and compare",
+    "step_3": "For signature verification, use DOMAIN_PREFIX + SHA256(canonical_json(payload)) as the message",
+    "step_4": "All implementations should produce identical canonical JSON for the same input"
+  }
+}
