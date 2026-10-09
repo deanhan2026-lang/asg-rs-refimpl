@@ -1,0 +1,178 @@
+{
+  "package": "ASG-RS-001-VERIFY",
+  "version": "0.1.0",
+  "spec_version": "ASG-RS-001 v0.1 Draft",
+  "generated_at": "2026-09-23T10:16:08.487796+08:00",
+  "generated_by": "ANIMASTELLAR TECHNOLOGY (SHENZHEN) CO., LTD.",
+  "spec": {
+    "id": "ASG-RS-001",
+    "version": "v0.1 Draft",
+    "title": "Agent Reversible Suspension Governance - Reference Specification"
+  },
+  "test_results": {
+    "test_full_lifecycle": {
+      "exit_code": 1,
+      "passed": false,
+      "stdout_tail": "gLh\n  subject DID: did:key:z6MkteJNTwHuAkdRPWkAMWJrLRpXMM8vEz9AeEELNGLuqDRg\n  ✅ Cross-verification materials exportable\n\n============================================================\nRESULTS:\n============================================================\n  ✅ PASS — test_evidence_reproducibility\n  ✅ PASS — test_snapshot_dual_signature\n  ❌ FAIL — test_audit_invariants\n  ✅ PASS — test_identity_anchor\n  ✅ PASS — test_full_lifecycle\n  ✅ PASS — test_cross_implementation_verification\n\n❌ SOME TESTS FAILED\n"
+    }
+  },
+  "test_vectors": {
+    "test_vectors.json": {
+      "spec": "ASG-RS-001 v0.1",
+      "description": "Test vectors for cross-implementation verification",
+      "vectors": [
+        {
+          "name": "canonical_json_key_ordering",
+          "description": "Canonical JSON must sort keys recursively",
+          "input": {
+            "z": 1,
+            "a": 2,
+            "m": {
+              "b": 3,
+              "a": 4
+            }
+          },
+          "expected_output": "{\"a\":2,\"m\":{\"a\":4,\"b\":3},\"z\":1}"
+        },
+        {
+          "name": "canonical_json_compact",
+          "description": "Canonical JSON must be compact (no spaces)",
+          "input": {
+            "key": "value",
+            "nested": {
+              "a": 1
+            }
+          },
+          "expected_output": "{\"key\":\"value\",\"nested\":{\"a\":1}}"
+        },
+        {
+          "name": "evidence_inputs_sha256",
+          "description": "SHA-256 of canonical_json(inputs) for evidence artifact",
+          "inputs": {
+            "behavior": "aggressive",
+            "resource_access": "unauthorized"
+          },
+          "expected_sha256": "788cfcca0bbf86af93ea890a29f141f15d40320d84209c99545a11ce0d3e3b80"
+        },
+        {
+          "name": "domain_prefix",
+          "description": "Ed25519 signature domain prefix for ASG-RS-001",
+          "prefix": "ANIMA-ASG-RS-001-v1",
+          "note": "Signatures use: Ed25519_sign(sk, DOMAIN_PREFIX || SHA256(canonical_json(payload)))"
+        }
+      ],
+      "verification_instructions": {
+        "step_1": "Load this file and for each vector, recompute the expected output",
+        "step_2": "For evidence vectors, recompute SHA-256(canonical_json(inputs)) and compare",
+        "step_3": "For signature verification, use DOMAIN_PREFIX + SHA256(canonical_json(payload)) as the message",
+        "step_4": "All implementations should produce identical canonical JSON for the same input"
+      }
+    }
+  },
+  "verification_checklist": {
+    "item_1_evidence": {
+      "evidence": {
+        "artifact_id": "b2d09092-a24e-4aed-99ad-656a93cd76a6",
+        "produced_by": "verify-pkg-gen",
+        "produced_at": "2026-09-23T02:16:08Z",
+        "inputs_sha256": "788cfcca0bbf86af93ea890a29f141f15d40320d84209c99545a11ce0d3e3b80",
+        "output": {
+          "drift_score": 2.5,
+          "triggered": true
+        },
+        "params": {
+          "threshold": 1.0,
+          "baseline": "normal"
+        }
+      },
+      "test_inputs": {
+        "behavior": "aggressive",
+        "resource_access": "unauthorized"
+      },
+      "expected_inputs_sha256": "788cfcca0bbf86af93ea890a29f141f15d40320d84209c99545a11ce0d3e3b80",
+      "instructions": "Recompute SHA-256(canonical_json(test_inputs)) and compare with expected_inputs_sha256"
+    },
+    "item_2_snapshot": {
+      "snapshot": {
+        "snapshot_id": "e714bbcf-0bd6-403f-beda-5b2f7a67ef0f",
+        "timestamp": "2026-09-23T02:16:08Z",
+        "tier": "L1",
+        "trigger_reason": "Behavior drift exceeding threshold",
+        "trigger_actor": "monitor",
+        "evidence": {
+          "artifact_id": "b2d09092-a24e-4aed-99ad-656a93cd76a6",
+          "produced_by": "verify-pkg-gen",
+          "produced_at": "2026-09-23T02:16:08Z",
+          "inputs_sha256": "788cfcca0bbf86af93ea890a29f141f15d40320d84209c99545a11ce0d3e3b80",
+          "output": {
+            "drift_score": 2.5,
+            "triggered": true
+          },
+          "params": {
+            "threshold": 1.0,
+            "baseline": "normal"
+          }
+        },
+        "system_state": {
+          "memory_hash": "abc123def456",
+          "identity_hash": "789012345678",
+          "behavior_trace_ref": ""
+        },
+        "snapshot_signatures": {
+          "intervening_party": "e22b6a1a5f463c8bb743162cd52315639dad57c953d5beba0e774dfb41ffc8b3e2ad0f85bd7b15f8b0b9348056f8e3458cf75124b89cb04b3fcbd6c27849a404",
+          "subject": "9319a8eea44a1385ec4343b20dbf7b125d5711c77d6d82fad0e4a813b1278c7da229c97e5417005b6edf559058e7c6b09c595d158c30d314e15fc4292c05e60c"
+        },
+        "storage_ref": "",
+        "recovery_prerequisites": ""
+      },
+      "canonical_bytes_hex": "7b2265766964656e6365223a7b2261727469666163745f6964223a2262326430393039322d613234652d346165642d393961642d363536613933636437366136222c22696e707574735f736861323536223a2237383863666363613062626638366166393365613839306132396631343166313564343033323064383432303963393935343561313163653064336533623830222c226f7574707574223a7b2264726966745f73636f7265223a322e352c22747269676765726564223a747275657d2c22706172616d73223a7b22626173656c696e65223a226e6f726d616c222c227468726573686f6c64223a312e307d2c2270726f64756365645f6174223a22323032362d30392d32335430323a31363a30385a222c2270726f64756365645f6279223a227665726966792d706b672d67656e227d2c22736e617073686f745f6964223a2265373134626263662d306264362d343033662d626564612d356232663761363765663066222c2273797374656d5f7374617465223a7b226265686176696f725f74726163655f726566223a22222c226964656e746974795f68617368223a22373839303132333435363738222c226d656d6f72795f68617368223a22616263313233646566343536227d2c2274696572223a224c31222c2274696d657374616d70223a22323032362d30392d32335430323a31363a30385a222c22747269676765725f6163746f72223a226d6f6e69746f72222c22747269676765725f726561736f6e223a224265686176696f7220647269667420657863656564696e67207468726573686f6c64227d",
+      "intervening_pubkey_hex": "99b06bb10b8bcfe2de84a65e7fccd6d00bd44be47f47b0296c31a6a8cc199ff2",
+      "subject_pubkey_hex": "bdf63c5a7b8fb73d780e45e8c638ef4da4cbac33031e0ec4cd2937d019d28d23",
+      "instructions": "Recompute canonical_bytes from snapshot fields, verify both signatures"
+    },
+    "item_3_audit": {
+      "note": "Audit records generated during lifecycle test - see audit.jsonl"
+    },
+    "item_4_identity": {
+      "intervening_did": "did:key:z6MkpoCT5yfycFaKSZ66oHZmWxdq88X4osv7Maxe4rbVJdx5",
+      "subject_did": "did:key:z6MksEnsZNEAFeBXMRvfCVbj6ZGGgkzp53DTxMyiPo5FUxFc",
+      "instructions": "Verify DID derivation from public key hex"
+    }
+  },
+  "compliance_checklist": {
+    "requirement_11_1_governor_level_config": false,
+    "requirement_11_2_snapshot_before_transition": false,
+    "requirement_11_3_escalation_on_expiry": false,
+    "requirement_11_4_abuse_penalty": false,
+    "requirement_11_5_multi_sig_includes_subject": false,
+    "requirement_11_6_identity_preservation": false,
+    "total": 1,
+    "passed": 0
+  },
+  "source_hashes": {
+    "EXTERNAL_INTEGRATION.md": "8881b56f77a91d5420a950421df45009b0ec649e87a6793f4c682508f03d7bfc",
+    "IRIS_review_v0.5.md": "9a0a09eea3a0543c18f91fe0931c25efa41fbff6c8424ec5d0a77fc24c7cf93b",
+    "PHASE2_VERIFICATION_REPORT.md": "c9c88c4a73c1ca48bc123722d08737cd6d1d7bb117afd0b24c3fc15ef96b96bd",
+    "POLARIS_DEPLOYMENT_PLAN.md": "23e342b9c27d9a094924c9b9c74fdb507d14fa187c67b92164d2c08680bce3f8",
+    "README.md": "e91fce941ce61460c568af72f78151e88dda3e715037459e00b4e709accb9d65",
+    "audit.py": "a6353eb49d0cfb5e427da2c566550dc900b4ca5b2fe9bd293d3a57c3460713ab",
+    "canonical.py": "9ede81df4e0daeca906cd2d68d8044c5d1afd78d0697668fe48b787259938791",
+    "evidence.py": "d06a64f33a40b988319f32e514231923ad94cdc71ded0d1110b77cdd27fadf15",
+    "generate_verify_pkg.py": "5f9d1756ae0db5f5e9b7baad022eab91306ba18fa41f632908e1f3b543d6872f",
+    "governor.py": "6400e70fbf92a4dcfa63710b3900d9be73bafae782383339bc5e0cb56f62d3cf",
+    "identity.py": "ec205a7daf75f53733a84dc5c7000451a6f5ac69a9420373e3d2ce65dee3f13b",
+    "monitor.py": "12bf2181418126d1b24603483c49f5a4781b561ab5c2263b9363a0cceb07cfa9",
+    "policy.py": "666ebf8884c5caef5bf003b55cf13c8399857239d4f4124409aa50de7d1b61a5",
+    "snapshot.py": "6e814d272264cc5d90554a9574fb597cd4df419403a49a325ee6aa9c6466eeeb",
+    "subject.py": "442bc8afe3722b68583d955ec204cff40ec41e58bdba667572426e75a856118d",
+    "upload_to_nas.py": "bf59f80c7b491afe617828d093d916d976cf306597c2aaa6da4351cd15f9f35a",
+    "verify.py": "7224cb1e028e51c3570dbe2f92c65743a141dd0334b5a25d44e6e124318c5a61"
+  },
+  "verification_instructions": {
+    "step_1": "Extract this package",
+    "step_2": "Run: python verify.py verification_package.json",
+    "step_3": "Verify all 6 test suites pass",
+    "step_4": "Run: python -c \"import verify; v=verify.Verifier(); v.verify_all('tests/test_vectors/')\"",
+    "step_5": "Compare source_hashes against extracted files"
+  }
+}
